@@ -31,6 +31,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 
 public class Plotter extends JFrame implements PropertyChangeListener{
@@ -81,10 +82,6 @@ public class Plotter extends JFrame implements PropertyChangeListener{
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		fc = new JFileChooser();
-		fc.setAcceptAllFileFilterUsed(false);
-		fc.addChoosableFileFilter(new ImageFilter());
-		
-		
 		
 		// OPEN BUTTON
 		openButton = new JButton("Open");
@@ -93,6 +90,10 @@ public class Plotter extends JFrame implements PropertyChangeListener{
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				
+				// Apply image filter to file chooser
+				fc.resetChoosableFileFilters();
+				fc.setAcceptAllFileFilterUsed(false);
+				fc.addChoosableFileFilter(new ImageFilter());
 				int returnVal = fc.showOpenDialog(Plotter.this);
 
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -100,7 +101,6 @@ public class Plotter extends JFrame implements PropertyChangeListener{
 					try {
 						imageOriginal = ImageIO.read(file);
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						System.out.println("Can't open image...");
 						e.printStackTrace();
 					}
@@ -118,8 +118,6 @@ public class Plotter extends JFrame implements PropertyChangeListener{
 				else {
 					// no file chosen
 				}
-				
-
 				
 				pack();
 			}
@@ -158,15 +156,20 @@ public class Plotter extends JFrame implements PropertyChangeListener{
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				
+				// Apply txt file filter to file chooser
+				FileNameExtensionFilter txtFilter = new FileNameExtensionFilter("Text File (.txt)", "txt");
+				fc.resetChoosableFileFilters();
+				fc.addChoosableFileFilter(txtFilter);
+				
 				int returnVal = fc.showSaveDialog(Plotter.this);
 				if (returnVal == JFileChooser.APPROVE_OPTION) {
-					try(PrintWriter pw = new PrintWriter(fc.getSelectedFile()+".txt")) {
+					try(PrintWriter pw = new PrintWriter(fc.getSelectedFile() + ".txt")) {
 						
 						// WRITE TO FILE
 					    
 					    if (transposeBox.isSelected()){ // LANDSCAPE MODE
 					    	
-						    pw.println(IMAGE_HEIGHT + " " + IMAGE_WIDTH);
+						    //pw.println(IMAGE_HEIGHT + " " + IMAGE_WIDTH);
 					    	
 						    for (int x=0; x<IMAGE_WIDTH; x++){
 						    	for (int y=0; y<IMAGE_HEIGHT; y++){
@@ -175,16 +178,19 @@ public class Plotter extends JFrame implements PropertyChangeListener{
 						    		} else {
 						    			pw.print(0);
 						    		}
+
+						    		if (y < IMAGE_HEIGHT-1) {
+						    			pw.print(',');
+						    		}
 						    		//System.out.println(imageArray[y][x]);
 						    	}
 						    	pw.println();
 						    }
 					    }
 					    
-					    
 					    else{ // PORTRAIT MODE
 					    	
-					    	pw.println(IMAGE_WIDTH + " " + IMAGE_HEIGHT);
+					    	//pw.println(IMAGE_WIDTH + " " + IMAGE_HEIGHT);
 					    	
 					    	for (int y=0; y<IMAGE_HEIGHT; y++){
 					    		for (int x=0; x<IMAGE_WIDTH; x++){
@@ -193,6 +199,10 @@ public class Plotter extends JFrame implements PropertyChangeListener{
 					    			} else {
 					    				pw.print(0);
 					    			}
+					    			
+						    		if (y < IMAGE_HEIGHT-1) {
+						    			pw.print(',');
+						    		}
 					    			//System.out.println(imageArray[x][y]);
 					    		}
 					    		pw.println();
