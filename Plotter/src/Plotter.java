@@ -31,6 +31,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
+import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 
@@ -75,8 +76,13 @@ public class Plotter extends JFrame implements PropertyChangeListener{
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		MAX_WIDTH = (int) screenSize.getWidth() - 50;
 		MAX_HEIGHT = (int) screenSize.getHeight()- 100;
-		icon = new ImageIcon("icon.png");
-		setIconImage(icon.getImage());
+		try {
+			icon = new ImageIcon(getClass().getResource("bin/icon.png"));
+			setIconImage(icon.getImage());
+		}
+		catch(Exception e) {
+		}
+		
 		
 		//addMouseListener(this);
 		
@@ -200,7 +206,7 @@ public class Plotter extends JFrame implements PropertyChangeListener{
 					    				pw.print(0);
 					    			}
 					    			
-						    		if (y < IMAGE_HEIGHT-1) {
+						    		if (x < IMAGE_WIDTH-1) {
 						    			pw.print(',');
 						    		}
 					    			//System.out.println(imageArray[x][y]);
@@ -237,7 +243,7 @@ public class Plotter extends JFrame implements PropertyChangeListener{
 		
 		// TRANSPOSE BUTTON
 		transposeBox = new JCheckBox("Transpose");
-		transposeBox.setSelected(true);
+		transposeBox.setSelected(false);
 		
 		// CONTRAST INPUT
 		contrastLabel = new JLabel("Contrast");
@@ -319,6 +325,13 @@ public class Plotter extends JFrame implements PropertyChangeListener{
 	}
 	
 	public static void main(String Args[]){
+		
+		try {
+	        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+	    }catch(Exception ex) {
+	        ex.printStackTrace();
+	    }
+		
 		JFrame PlotterFrame = new Plotter();
 		//lotterFrame.setSize(width, height);
 		PlotterFrame.pack();
